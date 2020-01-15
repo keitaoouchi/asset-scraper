@@ -1,0 +1,13 @@
+version: '3'
+services:
+  am-spider:
+    build: .
+    image: am-spider
+    container_name: am-spider
+    working_dir: /spider
+    volumes:
+      - ./auth.json:/spider/auth.json
+    tty: true
+    env_file: .env
+    ports:
+      - "127.0.0.1:8080:8080"

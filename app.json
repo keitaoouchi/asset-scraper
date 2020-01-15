@@ -1,0 +1,19 @@
+{
+  "options": {
+    "allow-unauthenticated": false
+  },
+  "env": {
+    "SBI_ID": {
+      "description": "SBI login id",
+      "required": true
+    },
+    "SBI_PW": {
+      "description": "SBI login password",
+      "required": true
+    },
+    "BUCKET": {
+      "description": "Bucket name for storing daily shares",
+      "required": true
+    }
+  }
+}
