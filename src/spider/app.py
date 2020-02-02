@@ -1,5 +1,5 @@
 from flask import Flask
-from scrape import scrape
+import task
 import os
 
 app = Flask(__name__)
@@ -13,7 +13,7 @@ def sbi():
     id = os.environ["SBI_ID"]
     pw = os.environ["SBI_PW"]
     bucket = os.environ["BUCKET"]
-    scrape(id, pw, bucket)
+    task.scrape_sbi(id, pw, bucket)
     return "OK!"
 
 

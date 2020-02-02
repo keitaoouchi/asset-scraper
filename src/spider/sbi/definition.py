@@ -1,5 +1,18 @@
 from datetime import date
 from typing import Optional
+from datetime import date
+
+class AssetSummary:
+    def __init__(self, cash: int, shares: int, trust: int, created_at: date):
+        self.cash = cash
+        self.shares = shares
+        self.trust = trust
+        self.created_at = created_at
+    
+    def make_csv_str(self) -> str:
+        header = "cash,shares,trust,created_at"
+        body = f"{self.cash},{self.shares},{self.trust},{self.created_at:%Y%m%d}"
+        return ",".join([header, body])
 
 
 class DateRange:

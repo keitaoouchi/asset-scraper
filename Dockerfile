@@ -23,4 +23,4 @@ RUN pip install poetry && \
     poetry config virtualenvs.create false && \
     poetry install
 
-CMD exec gunicorn --bind :8080 --workers 1 --threads 2 --chdir spider --graceful-timeout 300 app:app
+CMD exec gunicorn --bind :8080 --workers 1 --threads 3 --chdir spider --graceful-timeout 300 app:app

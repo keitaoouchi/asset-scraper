@@ -12,7 +12,7 @@ from typing import Optional
 
 class Scraper:
     def __init__(self, user_id: str, password: str):
-        self.csvdir = tempfile.TemporaryDirectory()
+        self.savedir = tempfile.TemporaryDirectory()
         self.tempdir = tempfile.TemporaryDirectory()
         options = webdriver.ChromeOptions()
         options.add_argument('--headless')
@@ -28,16 +28,17 @@ class Scraper:
         try:
             logging.info("Start scaraping")
             self._login()
+            self._get_summary()
             self._get_shares()
             if deals_range:
                 self._get_deals(deals_range.from_date, deals_range.to_date)
             if statements_range:
                 self._get_statements(statements_range.from_date, statements_range.to_date)
             logging.info("Finished scaraping")
-            return self.csvdir
+            return self.savedir
         except Exception as e:
             logging.error(e)
-            self.csvdir.cleanup()
+            self.savedir.cleanup()
             raise e
         finally:
             self.tempdir.cleanup()
@@ -51,6 +52,18 @@ class Scraper:
         self.driver.find_element_by_name("ACT_login").click()
         time.sleep(3)
         logging.info("Finished login")
+    
+    def _get_summary(self):
+        logging.info("Start getting summaries")
+        self.driver.find_element_by_xpath("//img[contains(@alt, '口座管理')]").click()
+        time.sleep(3)
+        self.driver.find_element_by_xpath("//area[contains(@alt, 'サマリー')]").click()
+        time.sleep(5)
+        html = self.driver.page_source
+        dst = os.path.join(self.savedir.name, 'summary.html')
+        with open(dst, 'w') as f:
+            f.write(html)
+        logging.info("Finished getting summaries")
 
     def _get_shares(self):
         logging.info("Start getting shares")
@@ -110,7 +123,7 @@ class Scraper:
     def _move_csv(self, file_name: str):
         for csv in [csv for csv in list(Path(self.tempdir.name).glob("*.csv"))]:
             src = csv.absolute().as_posix()
-            dst = os.path.join(self.csvdir.name, file_name)
+            dst = os.path.join(self.savedir.name, file_name)
             shutil.move(src, dst)
 
     def _check_csv(self) -> bool:
