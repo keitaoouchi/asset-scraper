@@ -30,7 +30,7 @@ def scrape_sbi(id: str, pw: str, bucket: str):
         file_name = f"asset_summary.{today:%Y%m%d}.csv"
         blob = gcs.blob(file_name)
         summary = definition.AssetSummary(cash, shares, trust, today)
-        blob.upload_from_string(summary.make_csv_str())
+        blob.upload_from_string(summary.make_csv_str(), content_type="text/csv")
         logging.info(f"{file_name}をアップロードしました")
 
 

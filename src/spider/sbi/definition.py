@@ -12,7 +12,7 @@ class AssetSummary:
     def make_csv_str(self) -> str:
         header = "cash,shares,trust,created_at"
         body = f"{self.cash},{self.shares},{self.trust},{self.created_at:%Y%m%d}"
-        return ",".join([header, body])
+        return "\n".join([header, body]) + "\n"
 
 
 class DateRange:
