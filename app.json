@@ -11,8 +11,20 @@
       "description": "SBI login password",
       "required": true
     },
-    "BUCKET": {
-      "description": "Bucket name for storing daily shares",
+    "SBI_BUCKET": {
+      "description": "Bucket name for storing daily shares for sbi",
+      "required": true
+    },
+    "RAKUTEN_ID": {
+      "description": "RAKUTEN login id",
+      "required": true
+    },
+    "RAKUTEN_PW": {
+      "description": "RAKUTEN login password",
+      "required": true
+    },
+    "RAKUTEN_BUCKET": {
+      "description": "Bucket name for storing daily summaries for rakuten",
       "required": true
     }
   }
