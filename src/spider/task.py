@@ -1,4 +1,6 @@
-from sbi import html_parser, csv_parser, definition, scraper
+from sbi import scraper as sbi_scraper
+from sbi import html_parser, definition
+from rakuten import scraper as rakuten_scraper
 from datetime import date
 from pathlib import Path
 from google.cloud import storage
@@ -6,15 +8,23 @@ from google.api_core.exceptions import NotFound
 import os
 import logging
 
+
+def scrape_rakuten(id: str, pw: str, bucket: str):
+    logging.getLogger().setLevel(logging.INFO)
+    s = rakuten_scraper.Scraper(id, pw)
+    dir = s.scrape()
+    file = [csv for csv in Path(dir.name).glob("summaries.*.csv")][0]
+    gcs = _gcs_client().get_bucket(bucket)
+    blob = gcs.blob(file.name)
+    blob.upload_from_filename(file.absolute().as_posix())
+    logging.info(f"{file.name}をアップロードしました")
+
+
 def scrape_sbi(id: str, pw: str, bucket: str):
     logging.getLogger().setLevel(logging.INFO)
-    s = scraper.Scraper(id, pw)
-    #deal_range = definition.DateRange(date(2020, 1, 1), date(2020, 12, 31))
-    #statements_range = definition.DateRange(date(2020, 1, 1), date(2020, 12, 31))
+    s = sbi_scraper.Scraper(id, pw)
     dir = s.scrape(None, None)
     shares_csv = [csv for csv in Path(dir.name).glob("shares.*.csv")][0]
-    #deals_csv = [csv for csv in Path(dir.name).glob("deals.*.csv")][0]
-    #statements_csv = [csv for csv in Path(dir.name).glob("statements.*.csv")][0]
     gcs = _gcs_client().get_bucket(bucket)
     for file in [shares_csv]:
         blob = gcs.blob(file.name)
